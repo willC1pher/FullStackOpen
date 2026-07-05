@@ -34,20 +34,11 @@ const DisplayAnecdoteWithMostVotes = (props) => {
   const maxAnecdote = props.anecdotes[maxVoteIndex]
   console.log(maxAnecdote)
 
-  if (maxVoted < 2) {
-    return (
-    <div>
-      <Header header = {props.header}/>
-      {maxAnecdote} <br />
-      has {maxVoted} vote{maxVoted === 1 ? '' : 's'}
-    </div>
-  )
-}
   return (
     <div>
       <Header header = {props.header}/>
       {maxAnecdote} <br />
-      has {maxVoted} votes
+      has {maxVoted} vote{maxVoted === 1 ? '' : 's'}
     </div>
   )
 }
