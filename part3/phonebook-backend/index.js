@@ -1,8 +1,7 @@
-/*Ex3.1 - 3.8*/
+/*Ex3.1 - 3.*/
 
 const express = require("express")
 const morgan = require("morgan")
-const cors = require("cors")
 const app = express()
 
 let persons = [
@@ -30,7 +29,6 @@ let persons = [
 
 // App.use() Middleware
 app.use(express.json())
-app.use(cors())
 app.use(express.static('dist'))
 
 morgan.token('body', (req, res) => {
