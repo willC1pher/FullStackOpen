@@ -2,34 +2,16 @@
 
 const express = require("express")
 const morgan = require("morgan")
+require('dotenv').config()
+const Person = require('./models/person')
+
 const app = express()
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+let persons = []
 
 // App.use() Middleware
-app.use(express.json())
 app.use(express.static('dist'))
+app.use(express.json())
 
 morgan.token('body', (req, res) => {
     // console.log('Request body', req.body)
@@ -44,56 +26,36 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    }
-    else {
-        response.status(404).end()
-    }
+    })
 })
-
-const generateId = () => {
-    const max = 99
-    const randomInt = Math.floor(Math.random() * max)
-    return String(randomInt)
-}
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
     
     // console.log('POST received')
-
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'name or number missing',
         })
     }
-
-    const personNames = persons.map(person => person.name.toLowerCase())
-    // console.log(personNames)
-    if (personNames.includes(body.name.trim().toLowerCase())) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-
-    const person = {
-        id: generateId(),
+    
+    const person = new Person({
         name: body.name,
         number: body.number,
-    }
+    })
     // console.log(person)
 
-    persons = persons.concat(person)
-
-    response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
