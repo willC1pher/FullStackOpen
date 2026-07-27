@@ -13,8 +13,8 @@ let persons = []
 app.use(express.static('dist'))
 app.use(express.json())
 
+// Request logger
 morgan.token('body', (req, res) => {
-    // console.log('Request body', req.body)
     return JSON.stringify(req.body)
 })
 
@@ -31,45 +31,98 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    Person.findById(request.params.id).then(person => {
-        response.json(person)
-    })
+app.get('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id)
+        .then(person => {
+            if (person) {
+                response.json(person)
+            }
+            else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
+
+    const nameInput = body.name
+    const numberInput = body.number
     
     // console.log('POST received')
-    if (!body.name || !body.number) {
+    if (!nameInput || !numberInput) {
         return response.status(400).json({
             error: 'name or number missing',
         })
     }
-    
-    const person = new Person({
-        name: body.name,
-        number: body.number,
-    })
-    // console.log(person)
 
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })
+    // MongoDB checking if there is a document having query { name: "..."}
+    Person.findOne({ name: nameInput })
+        // .then(existingPerson =>) is the same as existingPerson = Person { ... }
+        .then(existingPerson => {
+            if (existingPerson) {
+                existingPerson.number = numberInput
+                console.log('Existing person', existingPerson)
+
+                // Mongoose sends command to MongoDB (SQL query)
+                return existingPerson.save()
+            }
+
+            const person = new Person({
+                name: nameInput,
+                number: numberInput,
+            })
+            console.log('Person', person.name)
+
+            return person.save()
+        })
+        // Send the updated person back to frontend
+        .then(savedPerson => {
+            console.log('Saved Person', savedPerson.number)
+            response.json(savedPerson)
+        })
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    persons = persons.filter((person) => person.id !== id)
-    response.status(204).end()
+    Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-    response.send(`
-        <div>Phonebook has info for ${persons.length} people</div>
-        <div>${new Date()}</div>
-    `)
+app.get('/info', (request, response, next) => {
+    Person.countDocuments({})
+        .then(count => {
+            response.send(`
+                <div>Phonebook has info for ${count} people</div>
+                <div>${new Date()}</div>
+            `)
+        })
+        .catch(error => next(error))
 })
+
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+// Moving error handling to middleware (This has to be last)
+const errorHandler = (error, request, response, next) => {
+    console.log(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: "malformatted id" })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 // Use assigned PORT or default PORT
 const PORT = process.env.PORT || 3001

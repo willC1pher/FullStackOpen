@@ -5,15 +5,15 @@ GET http://localhost:3001/api/persons
 GET http://localhost:3001/info
 
 ###
-GET http://localhost:3001/api/persons/6a656e4dfd7c930c8198ab00
+GET http://localhost:3001/api/persons/1
 ###
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
   "name": "Kevin",
-  "number": 998
+  "number": 997
 }
 
 ###
-DELETE  http://localhost:3001/api/persons/
+DELETE  http://localhost:3001/api/persons/6a66ef247dff61bc3d486b9e
