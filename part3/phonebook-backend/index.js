@@ -25,10 +25,12 @@ app.get('/', (request, response) => {
     response.send('<h1>Welcome</h1>')
 })
 
-app.get('/api/persons', (request, response) => {
-    Person.find({}).then(persons => {
-        response.json(persons)
-    })
+app.get('/api/persons', (request, response, next) => {
+    Person.find({})
+        .then(persons => {
+            response.json(persons)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -57,35 +59,21 @@ app.post('/api/persons', (request, response, next) => {
         })
     }
 
-    // MongoDB checking if there is a document having query { name: "..."}
-    Person.findOne({ name: nameInput })
-        // .then(existingPerson =>) is the same as existingPerson = Person { ... }
-        .then(existingPerson => {
-            if (existingPerson) {
-                existingPerson.number = numberInput
-                console.log('Existing person', existingPerson)
+    const person = new Person({
+        name: nameInput,
+        number: numberInput,
+    })
 
-                // Mongoose sends command to MongoDB (SQL query)
-                return existingPerson.save()
-            }
-
-            const person = new Person({
-                name: nameInput,
-                number: numberInput,
-            })
-            console.log('Person', person.name)
-
-            return person.save()
-        })
-        // Send the updated person back to frontend
+    // person.save(): Save the document to the DB
+    person.save()
         .then(savedPerson => {
-            console.log('Saved Person', savedPerson.number)
+            // response.json(savedPerson): Save the object to the FE
             response.json(savedPerson)
         })
         .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
         .then(result => {
             response.status(204).end()
@@ -100,6 +88,20 @@ app.get('/info', (request, response, next) => {
                 <div>Phonebook has info for ${count} people</div>
                 <div>${new Date()}</div>
             `)
+        })
+        .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id)
+        // Save the person to DB
+        .then(person => {
+            person.number = request.body.number
+            return person.save()
+        })
+        // Save the person to FE
+        .then(updatedPerson => {
+            response.json(updatedPerson)
         })
         .catch(error => next(error))
 })
