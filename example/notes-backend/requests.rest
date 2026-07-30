@@ -13,3 +13,12 @@ Content-Type: application/json
 
 ###
 DELETE  http://localhost:3001/api/notes/6a656618b576564e830adb15
+
+###
+PUT http://localhost:3001/api/notes/6a656618b576564e830adb15
+Content-Type: application/json
+
+{
+  "content": "Change a Note",
+  "important": false
+}
