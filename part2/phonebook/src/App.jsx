@@ -59,6 +59,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [message, setMessage] = useState('Welcome to Phonebook App')
+  // Set interface of the message (RED/GREEN)
   const [successState, setSuccessState] = useState(true)
 
   // Fetch the persons data from db
@@ -135,6 +136,15 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => {
+        console.log(error.response.data.error)
+        setSuccessState(false)
+        setMessage(error.response.data.error)
+        setTimeout(() => {
+          setSuccessState(true)
+          setMessage(null)
+        }, 10000)
+      })
   }
 
   // Filter the persons based on search query
@@ -172,6 +182,7 @@ const App = () => {
           setMessage(`Information of ${personToDelete.name} has already been removed from server`)
           setTimeout(() => {
             setMessage(null)
+            setSuccessState(true)
           }, 10000)
         })
     }
@@ -207,6 +218,7 @@ const App = () => {
             setMessage(`Information of ${newName} has already been removed from server`)
             setTimeout(() => {
               setMessage(null)
+              setSuccessState(true)
             }, 10000)
           })
       }
