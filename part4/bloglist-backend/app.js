@@ -19,8 +19,7 @@ mongoose
   })
 
 app.use(express.json())
-console.log('Request logger', middleware.requestLogger)
-app.use(middleware.requestLogger)
+// app.use(middleware.requestLogger)
 
 app.use('/api/blogs', blogsRouter)
 app.use(middleware.unknownEndpoint)
