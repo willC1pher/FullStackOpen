@@ -135,9 +135,9 @@ describe('addition of a new blog post', () => {
 describe('deletion of a blog post', () => {
 	test('a blog post can be deleted', async () => {
 		const blogsAtStart = await helper.blogsInDb()
-		logger.info('length of blogsAtStart', blogsAtStart.length)
+		// logger.info('length of blogsAtStart', blogsAtStart.length)
 		const blogsToDelete = blogsAtStart[blogsAtStart.length - 1]
-		logger.info('blogsToDelete', blogsToDelete)
+		// logger.info('blogsToDelete', blogsToDelete)
 
 		await api
 			.delete(`/api/blogs/${blogsToDelete.id}`)
@@ -150,6 +150,32 @@ describe('deletion of a blog post', () => {
 		assert(!idList.includes(blogsToDelete.id))
 		//Check whether the blog is actually removed from the blog list
 		assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+	})
+})
+
+describe('updating of a blog post', () => {
+	test('a blog post can be updated', async () => {
+		const blogsAtStart = await helper.blogsInDb()
+		const blogToUpdate = blogsAtStart[blogsAtStart.length - 1]
+
+		const newLikes = blogToUpdate.likes + 1
+
+		await api
+			.put(`/api/blogs/${blogToUpdate.id}`)
+			.send({
+				...blogToUpdate,
+				likes: newLikes
+			})
+			.expect(200)
+
+		const blogsAtEnd = await helper.blogsInDb()
+
+		// Find by id as MongoDB does not guarantee that find({}) documents in order-stable order
+		const blogAfterUpdate = blogsAtEnd.find(
+			blog => blog.id === blogToUpdate.id
+		)
+
+		assert.strictEqual(blogAfterUpdate.likes, newLikes)
 	})
 })
 
