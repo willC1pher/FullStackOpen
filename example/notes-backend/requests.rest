@@ -1,6 +1,8 @@
 ###
 GET http://localhost:3001/api/notes
 ###
+GET http://localhost:3001/api/users
+###
 GET http://localhost:3001/api/notes/6a62d124be03688f28fe5ef0
 ###
 POST http://localhost:3001/api/notes
@@ -8,9 +10,35 @@ Content-Type: application/json
 
 {
   "content": "Full Stack Open is easy",
-  "important": true
+  "important": true,
+  "userId": "6a783d0c6013386f65c1324c"
 }
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
 
+{
+  "username": "mluukkai",
+  "name": "Matti Luukkainen",
+  "password": "salainen"
+}
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "mluukkai",
+  "password": "salainen"
+}
+###
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2YTc4M2QwYzYwMTMzODZmNjVjMTMyNGMiLCJpYXQiOjE3ODYzNTE5NDZ9.x4Bv90iKCqKrbmPJ-s5ugdPQOXbZM1lmKRdhOJaAbFI
+
+{
+  "content": "SPAs use token-based auth",
+  "important": false
+}
 ###
 DELETE  http://localhost:3001/api/notes/6a656618b576564e830adb15
 
