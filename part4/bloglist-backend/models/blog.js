@@ -4,7 +4,12 @@ const blogSchema = mongoose.Schema({
   title: String,
   author: String,
   url: String,
-  likes: { type: Number, default: 0 }
+  likes: { type: Number, default: 0 },
+  // references are stored in both documents: blog and user
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 blogSchema.set('toJSON', {

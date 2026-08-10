@@ -10,3 +10,20 @@ Content-Type: application/json
     "url": "https://cristianoronaldo.com/#cr7",
     "likes": 999
 }
+###
+GET http://localhost:3003/api/users
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+# {
+#     "username": "GOAT",
+#     "name": "Ronaldo",
+#     "password": "sui"
+# }
+
+{
+    "username": "viceGOAT",
+    "name": "Messi",
+    "password": "sewii"
+}
