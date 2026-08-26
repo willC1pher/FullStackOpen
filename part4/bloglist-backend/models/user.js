@@ -1,35 +1,31 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        minlength: 3,
-        unique: true
-    },
-    name: {
-        type: String,
-        required: true,
-        minlength: 3
-    },
-    passwordHash: String,
-    blogs: [
-        {
-            // The ids of the blogs are stored within the user document as an array of Mongo ids
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Blog'
-        }
-    ],
+  username: {
+    type: String,
+    required: [true, 'Username cannot be blank.'],
+    minlength: [3, 'Username must be at least 3 characters.'],
+    unique: true
+  },
+  name: String,
+	passwordHash: String,
+  blogs: [
+    {
+      // The ids of the blogs are stored within the user document as an array of Mongo ids
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ],
 })
 
 userSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-        // the passwordHash should not be revealed
-        delete returnedObject.passwordHash
-    }
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    // the passwordHash should not be revealed
+    delete returnedObject.passwordHash
+  }
 })
 
 const User = mongoose.model('User', userSchema)
