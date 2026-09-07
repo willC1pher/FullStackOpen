@@ -28,6 +28,6 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use(middleware.unknownEndpoint)
 app.use(middleware.tokenExtractor)
-app.use(middleware.errorHandler)
+app.use(middleware.errorHandler)    // errorHandler must be last
 
 module.exports = app
