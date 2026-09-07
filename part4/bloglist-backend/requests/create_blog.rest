@@ -9,3 +9,14 @@ Content-Type: application/json
     "likes": 999
 }
 
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Who is GOAT?",
+    "author": "Messi",
+    "url": "https://messi.com/en/",
+    "likes": 998
+}
+

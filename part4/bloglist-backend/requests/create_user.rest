@@ -3,19 +3,17 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "username": "go",
+    "username": "GOAT",
     "name": "Ronaldo",
     "password": "sui"
 }
 
-# {
-#     "username": "GOAT",
-#     "name": "Ronaldo",
-#     "password": "sui"
-# }
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
 
-# {
-#     "username": "viceGOAT",
-#     "name": "Messi",
-#     "password": "sewii"
-# }
+{
+    "username": "viceGOAT",
+    "name": "Messi",
+    "password": "sewii"
+}
