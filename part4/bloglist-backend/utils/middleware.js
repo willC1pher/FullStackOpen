@@ -7,11 +7,14 @@ morgan.token('body', req => {
 
 const requestLogger = morgan(':method :url :status :body')
 
+//-----------------------
 // Unknown endpoint detecter
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+//-----------------------
+// Error handler
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -29,6 +32,16 @@ const errorHandler = (error, request, response, next) => {
     && error.message.includes('E11000 duplicate key error')) {
     return response.status(400).json({ error: 'Username must be unique' })
   }
+  else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({
+      error: 'Token missing or invalid.'
+    })
+  }
+  else if (error.name = 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'Token expired.'
+    })
+  }
 
   next(error)
   // console.log('ERROR:', error)
@@ -37,8 +50,23 @@ const errorHandler = (error, request, response, next) => {
   // console.log('ERROR CODE:', error.code)
 }
 
+//-----------------------
+// Token extractor
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('Authorization')
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    request.token = authorization.replace('Bearer ', '')
+  }
+
+  next()
+}
+
+
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }
