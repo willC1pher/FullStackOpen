@@ -1,2 +1,7 @@
-###
-DELETE http://localhost:3003/api/blogs/6a915698ed21eef3d354606a
+### Wrong Owner
+DELETE http://localhost:3003/api/blogs/6a9e75f884fa750476be6e27
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkdPQVQiLCJpZCI6IjZhOWUwY2RhOGY1OTc1NmM5OWUyZDFlYSIsImlhdCI6MTc4ODg1MzM0Mn0.xalMTnWU27IjLD7sIok8WDp63hCvVMelre6dgpzMsJs
+
+### Right Owner
+DELETE http://localhost:3003/api/blogs/6a9fbe8d0c9dc1e21b93eb9a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpY2VHT0FUIiwiaWQiOiI2YTllMGNlMThmNTk3NTZjOTllMmQxZWIiLCJpYXQiOjE3ODg3Njk3NzF9.wX79wdDs2qHrHaDX71sxzEoqF19iPHdsxMgwyHaHdbc
