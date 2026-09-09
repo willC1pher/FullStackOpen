@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
+
 // Request logger
 const morgan = require('morgan')
 
@@ -32,16 +35,16 @@ const errorHandler = (error, request, response, next) => {
     && error.message.includes('E11000 duplicate key error')) {
     return response.status(400).json({ error: 'Username must be unique' })
   }
-  else if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({
-      error: 'Token missing or invalid.'
-    })
-  }
-  else if (error.name = 'TokenExpiredError') {
-    return response.status(401).json({
-      error: 'Token expired.'
-    })
-  }
+  // else if (error.name === 'JsonWebTokenError') {
+  //   return response.status(401).json({
+  //     error: 'Token missing or invalid.'
+  //   })
+  // }
+  // else if (error.name = 'TokenExpiredError') {
+  //   return response.status(401).json({
+  //     error: 'Token expired.'
+  //   })
+  // }
 
   next(error)
   // console.log('ERROR:', error)
@@ -62,11 +65,36 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+//-----------------------
+// User extractor
+const userExtractor = async (request, response, next) => {
+  // Use try-catch because if request.token does not exist, jwt.verify()
+  // throws before the 'if' statement.
+  try {
+      const decodedToken = jwt.verify(
+      request.token, 
+      process.env.SECRET
+    )
 
+    if (!decodedToken.id) {
+      return response.status(401).json({ 
+        error: 'Token missing or invalid.' 
+      })
+    }
+
+      request.user = await User.findById(decodedToken.id)
+  
+    next()
+  }
+  catch (error) {
+    next(error)
+  }
+}
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }

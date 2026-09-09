@@ -1,6 +1,6 @@
 ### Valid token
 POST http://localhost:3003/api/blogs
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkdPQVQiLCJpZCI6IjZhOWUwY2RhOGY1OTc1NmM5OWUyZDFlYSIsImlhdCI6MTc4ODg1NDMyM30.f5Wn_pNGJc-22KOO_MCcicTHvsyO8N7FiPc3UOREn5w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkdPQVQiLCJpZCI6IjZhOWUwY2RhOGY1OTc1NmM5OWUyZDFlYSIsImlhdCI6MTc4ODg4MDU4MX0.KE2NiJOwPOGasCVpPh0qjRx76Xk3sS9D8peJH5MGXgE
 Content-Type: application/json
 
 {

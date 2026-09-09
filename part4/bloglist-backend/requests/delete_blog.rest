@@ -1,5 +1,5 @@
 ### Wrong Owner
-DELETE http://localhost:3003/api/blogs/6a9e75f884fa750476be6e27
+DELETE http://localhost:3003/api/blogs/6aa100aa6c743d4aada7aadc
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkdPQVQiLCJpZCI6IjZhOWUwY2RhOGY1OTc1NmM5OWUyZDFlYSIsImlhdCI6MTc4ODg1MzM0Mn0.xalMTnWU27IjLD7sIok8WDp63hCvVMelre6dgpzMsJs
 
 ### Right Owner
