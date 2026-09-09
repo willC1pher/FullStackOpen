@@ -5,15 +5,24 @@ const app = require('../app')
 const assert = require('node:assert')
 const Blog = require('../models/blog')
 const helper = require('./blog_test_helper')
+const User = require('../models/user')
 
 const api = supertest(app)
 
+let token
+
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(helper.initialBlogs[0])
+  await User.deleteMany({})
+
+  const { token: userToken, savedUser: user } = await helper.getTokenAndUser()
+  token = userToken
+
+  let blogObject = new Blog({...helper.initialBlogs[0], user: user._id})
   await blogObject.save()
-  blogObject = new Blog(helper.initialBlogs[1])
+  blogObject = new Blog({...helper.initialBlogs[1], user: user._id})
   await blogObject.save()
+  // console.log('TOKEN', token)
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -48,6 +57,7 @@ describe('addition of a new blog post', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -66,6 +76,7 @@ describe('addition of a new blog post', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -87,6 +98,7 @@ describe('addition of a new blog post', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -115,19 +127,36 @@ describe('addition of a new blog post', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutBoth)
       .expect(400)
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutTitle)
       .expect(400)
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutUrl)
       .expect(400)
     // assert.strictEqual(response1.statusCode, 400)
     // assert.strictEqual(response2.statusCode, 400)
     // assert.strictEqual(response3.statusCode, 400)
+  })
+
+  test('a blog post without token cannot be added to the database', async () => {
+    const newBlog = {
+      title: 'Blog without token',
+      author: 'Fed Anerson',
+      url: 'https://withouttokenblog.com/',
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
   })
 })
 
@@ -140,6 +169,7 @@ describe('deletion of a blog post', () => {
 
     await api
       .delete(`/api/blogs/${blogsToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()

@@ -28,7 +28,6 @@ blogsRouter.post(
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-
     if (!savedBlog.title || !savedBlog.url) {
       response.status(400).end()
     }

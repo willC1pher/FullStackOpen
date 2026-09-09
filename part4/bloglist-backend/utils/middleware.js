@@ -35,16 +35,16 @@ const errorHandler = (error, request, response, next) => {
     && error.message.includes('E11000 duplicate key error')) {
     return response.status(400).json({ error: 'Username must be unique' })
   }
-  // else if (error.name === 'JsonWebTokenError') {
-  //   return response.status(401).json({
-  //     error: 'Token missing or invalid.'
-  //   })
-  // }
-  // else if (error.name = 'TokenExpiredError') {
-  //   return response.status(401).json({
-  //     error: 'Token expired.'
-  //   })
-  // }
+  else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({
+      error: 'Token missing or invalid.'
+    })
+  }
+  else if (error.name = 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'Token expired.'
+    })
+  }
 
   next(error)
   // console.log('ERROR:', error)
